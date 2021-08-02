@@ -1,4 +1,8 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from "vue";
+import App from "./App.vue";
+import dayjs from "dayjs";
+import "./index.css";
 
-createApp(App).mount('#app')
+const app = createApp(App);
+app.config.globalProperties.$dayjs = dayjs;
+app.mount("#app");

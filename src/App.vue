@@ -1,26 +1,44 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="container mx-auto">
+    <Search ref="search" @fetch-events="onFetch" />
+    <EventList :events="events" />
+    <div class="flex justify-between gap-x-1" v-if="this.next !== null || this.previous !== null">
+      <button class="w-full px-4 py-3" :class="{'bg-purple-500 text-white hover:bg-purple-700': this.previous !== null, 'bg-purple-200 text-gray-400 cursor-not-allowed': this.previous === null}" @click.prevent="onPrev" :disabled="this.previous === null">Previous</button>
+      <button class="w-full px-4 py-3" :class="{'bg-purple-500 text-white hover:bg-purple-700': this.next !== null, 'bg-purple-200 text-gray-400 cursor-not-allowed': this.next === null}" @click.prevent="onNext" :disabled="this.next === null">Next</button>
+    </div>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import Search from "./components/Search";
+import EventList from "./components/EventList";
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    Search,
+    EventList,
+  },
+  data() {
+    return {
+      events: [],
+      next: null,
+      previous: null,
+    };
+  },
+  methods: {
+    onFetch(result) {
+      this.events = result.results;
+      this.next = result.next;
+      this.previous = result.previous;
+    },
+    onNext() {
+      this.$refs.search.onPagination(this.next);
+      window.scrollTo(0,0)
+    },
+    onPrev() {
+      this.$refs.search.onPagination(this.previous)
+      window.scrollTo(0,0)
+    }
+  },
+};
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
